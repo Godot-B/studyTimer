@@ -23,7 +23,7 @@ public class Keyword extends BaseEntity {
     private Long id;
 
     @Builder.Default
-    @OneToMany(mappedBy = "subject")
+    @OneToMany(mappedBy = "keyword")
     private List<Timer> timers = new ArrayList<>();
 
     private String keywordName;

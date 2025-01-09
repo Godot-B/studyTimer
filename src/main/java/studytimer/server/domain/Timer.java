@@ -24,7 +24,7 @@ public class Timer extends BaseEntity {
     private DatePlan datePlan;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "subject_id", nullable = false)
+    @JoinColumn(name = "keyword_id", nullable = false)
     private Keyword keyword;
 
     private String timerName;
