@@ -13,6 +13,7 @@ import studytimer.server.domain.Keyword;
 import studytimer.server.domain.Timer;
 import studytimer.server.repository.DatePlanRepository;
 import studytimer.server.repository.KeywordRepository;
+import studytimer.server.web.dto.DatePlanRequestDTO;
 import studytimer.server.web.dto.DatePlanResponseDTO;
 import studytimer.server.web.dto.TimerRequestDTO;
 
@@ -142,9 +143,10 @@ public class DatePlanService implements DatePlanQueryService, DatePlanCommandSer
 
     @Transactional
     @Override
-    public DatePlan createOrUpdateDatePlan(Integer goalTime) {
+    public DatePlan createOrUpdateDatePlan(DatePlanRequestDTO.SetGoalDTO request) {
 
         DatePlan todayDatePlan = datePlanRepository.findByDate(LocalDate.now());
+        int goalTime = request.getGoalHour() * 60 + request.getGoalMinute();
 
         if (todayDatePlan == null) {
             return DatePlan.builder()
@@ -222,9 +224,13 @@ public class DatePlanService implements DatePlanQueryService, DatePlanCommandSer
     }
 
     @Override
-    public List<Timer> getTodayTimers() {
-        DatePlan todayDatePlan = datePlanRepository.findByDateAndThrow(LocalDate.now());
-        return todayDatePlan.getTimerList();
+    public DatePlan getTodayPlan() {
+        return datePlanRepository.findByDateAndThrow(LocalDate.now());
+    }
+
+    @Override
+    public DatePlan findDatePlanByDate(LocalDate date) {
+        return datePlanRepository.findByDateAndThrow(date);
     }
 
     @Override

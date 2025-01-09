@@ -26,6 +26,16 @@ public class DatePlanResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class DeleteResultDTO {
+
+        Long deleteSubjectId;
+        String message;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class HourlyStudyTimesDTO {
 
         Integer hour;

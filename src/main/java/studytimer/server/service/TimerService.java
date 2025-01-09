@@ -44,7 +44,7 @@ public class TimerService {
     }
 
     @Transactional
-    public void deleteTimer(Long timerId) {
+    public String deleteTimer(Long timerId) {
         Timer findTimer = timerRepository.findById(timerId)
                 .orElseThrow(() -> new TimerHandler(ErrorStatus.TIMER_NOT_FOUND));
 
@@ -52,8 +52,13 @@ public class TimerService {
 
         timerRepository.delete(findTimer);
 
-        if (keyword.getTimers().isEmpty())
+        if (keyword.getTimers().isEmpty()) {
+
             keywordRepository.delete(keyword);
+            return "(키워드 포함)" + findTimer.getTimerName();
+        } else {
+            return findTimer.getTimerName();
+        }
     }
 
     public List<Timer> getTodayTimers() {

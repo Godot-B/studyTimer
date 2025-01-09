@@ -4,13 +4,16 @@ import studytimer.server.domain.DatePlan;
 import studytimer.server.domain.Timer;
 import studytimer.server.web.dto.DatePlanResponseDTO;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface DatePlanQueryService {
 
     Timer getTimerByIndex(Integer timerIdx, DatePlan datePlan);
 
-    List<Timer> getTodayTimers();
+    DatePlan getTodayPlan();
+
+    DatePlan findDatePlanByDate(LocalDate date);
 
     DatePlanResponseDTO.StatDTO getStatWithAllKeywordsDTO(DatePlan datePlan);
 
