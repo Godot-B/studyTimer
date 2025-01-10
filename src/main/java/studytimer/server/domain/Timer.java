@@ -2,15 +2,11 @@ package studytimer.server.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
 import studytimer.server.domain.common.BaseEntity;
 
 @Entity
 @Getter
 @Builder
-@DynamicUpdate
-@DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Timer extends BaseEntity {
@@ -24,19 +20,23 @@ public class Timer extends BaseEntity {
     private DatePlan datePlan;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "keyword_id", nullable = false)
+    @JoinColumn(name = "keyword_id", nullable = true)
     private Keyword keyword;
 
     private String timerName;
 
     private Integer timerGoalTime; // 목표 공부 시간
 
+    @Builder.Default
     private Float timerStudyTime = 0.0f; // 실제 공부 시간
 
+    @Builder.Default
     private Integer breakTime = 10; // 휴식 시간 (현재 10분 고정)
 
+    @Builder.Default
     private Boolean started = false;
 
+    @Builder.Default
     private Boolean completed = false;
 
     public void setCompleted(Boolean completed) {
@@ -53,6 +53,12 @@ public class Timer extends BaseEntity {
 
     public void setKeyword(Keyword keyword) {
         this.keyword = keyword;
+    }
+
+    public void addStartToMidnight(Float timerStudyTime) {
+        this.timerStudyTime += timerStudyTime;
+        if (this.timerStudyTime >= timerGoalTime)
+            completed = true;
     }
 
     public void updateTimerStudyTime(Float timerStudyTime) {

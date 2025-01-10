@@ -15,6 +15,9 @@ public class KeywordResponseDTO {
     @AllArgsConstructor
     public static class SetResultDTO {
 
+        @Builder.Default
+        String message = "타이머 시작 성공";
+
         Long keywordId;
         String keywordName;
         LocalDateTime createdAt;

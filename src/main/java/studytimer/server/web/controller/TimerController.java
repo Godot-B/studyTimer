@@ -4,13 +4,20 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import studytimer.server.apiPayload.ApiResponse;
+import studytimer.server.converter.KeywordConverter;
 import studytimer.server.converter.TimerConverter;
+import studytimer.server.domain.Keyword;
 import studytimer.server.domain.Timer;
 import studytimer.server.service.DatePlanCommandService;
 import studytimer.server.service.KeywordService;
 import studytimer.server.service.TimerService;
+import studytimer.server.web.dto.KeywordResponseDTO;
 import studytimer.server.web.dto.TimerRequestDTO;
 import studytimer.server.web.dto.TimerResponseDTO;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/timer")
@@ -38,10 +45,10 @@ public class TimerController {
      */
     @Operation(summary = "타이머 시작 & 선택적 키워드 저장", description = "과목을 처음 공부할 때만 키워드가 저장이 됩니다.")
     @PostMapping("/{subjectIdx}/start")
-    public ApiResponse<String> postKeyword(@PathVariable Integer subjectIdx) {
+    public ApiResponse<KeywordResponseDTO.SetResultDTO> postKeyword(@PathVariable Integer subjectIdx) {
 
-        return ApiResponse.onSuccess("타이머 시작 성공" +
-                keywordService.optionalSaveKeyword(subjectIdx));
+        Keyword keyword = keywordService.optionalSaveKeyword(subjectIdx);
+        return ApiResponse.onSuccess(KeywordConverter.toSetResultDTO(keyword));
     }
 
     /**
@@ -69,5 +76,12 @@ public class TimerController {
         return ApiResponse.onSuccess(TimerConverter.toRemainTimeDTO(currentTimer));
     }
 
-
+    //test용 자정 컨트롤러
+/*    @Operation(summary = "자정 이벤트 실행", description = "test용")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "요청 성공")
+    @PostMapping("/{date}")
+    public ApiResponse<Void> midnightTest(@PathVariable LocalDate date) {
+        datePlanCommandService.midnightCopyDatePlan(date);
+        return ApiResponse.onSuccess(null);
+    }*/
 }
