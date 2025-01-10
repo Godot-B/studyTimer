@@ -13,6 +13,7 @@ import studytimer.server.domain.Keyword;
 import studytimer.server.domain.Timer;
 import studytimer.server.repository.DatePlanRepository;
 import studytimer.server.repository.KeywordRepository;
+import studytimer.server.repository.TimerRepository;
 import studytimer.server.web.dto.DatePlanRequestDTO;
 import studytimer.server.web.dto.DatePlanResponseDTO;
 import studytimer.server.web.dto.TimerRequestDTO;
@@ -34,6 +35,7 @@ public class DatePlanService implements DatePlanQueryService, DatePlanCommandSer
 
     private final DatePlanRepository datePlanRepository;
     private final KeywordRepository keywordRepository;
+    private final TimerRepository timerRepository;
 
     /**
      * 시간 별 공부 분포 기록
@@ -104,6 +106,8 @@ public class DatePlanService implements DatePlanQueryService, DatePlanCommandSer
         float midnightToEndTime = calcSameDayTimeDifferAndLog(todayNewPlan, midnight, endTime);
         nextDayTimer.updateTimerStudyTime(midnightToEndTime);
 
+        nextDayTimer.addStartToMidnight(startToMidnight); // 자정 이전 공부가 현재 타이머 필드에 반영돼야 함.
+
         return nextDayTimer;
     }
 
@@ -149,10 +153,12 @@ public class DatePlanService implements DatePlanQueryService, DatePlanCommandSer
         int goalTime = request.getGoalHour() * 60 + request.getGoalMinute();
 
         if (todayDatePlan == null) {
-            return DatePlan.builder()
+            DatePlan newDatePlan = DatePlan.builder()
                     .date(LocalDate.now())
                     .goalTime(goalTime)
                     .build();
+            datePlanRepository.save(newDatePlan);
+            return newDatePlan;
         } else {
             todayDatePlan.updateGoalTime(goalTime);
             return todayDatePlan;
@@ -220,6 +226,7 @@ public class DatePlanService implements DatePlanQueryService, DatePlanCommandSer
         for (Timer iterTimer : yesterdayPlan.getTimerList()) {
             Timer copyTimer = iterTimer.copy();
             copyTimer.setDatePlan(newDatePlan);
+            timerRepository.save(copyTimer);
         }
     }
 

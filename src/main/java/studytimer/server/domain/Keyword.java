@@ -11,8 +11,6 @@ import java.util.List;
 
 @Entity
 @Getter
-@DynamicUpdate
-@DynamicInsert
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -28,6 +26,7 @@ public class Keyword extends BaseEntity {
 
     private String keywordName;
 
+    @Builder.Default
     private Float keywordStudyTime = 0.0f; // 실제 공부 시간
 
     public void updateSubjectStudyTime(Float studyTime) {

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import studytimer.server.apiPayload.code.status.ErrorStatus;
+import studytimer.server.apiPayload.exception.handler.KeywordHandler;
 import studytimer.server.apiPayload.exception.handler.TimerHandler;
 import studytimer.server.domain.DatePlan;
 import studytimer.server.domain.Keyword;
@@ -45,20 +46,22 @@ public class TimerService {
 
     @Transactional
     public String deleteTimer(Long timerId) {
-        Timer findTimer = timerRepository.findById(timerId)
+        Timer timerToBeDeleted = timerRepository.findById(timerId)
                 .orElseThrow(() -> new TimerHandler(ErrorStatus.TIMER_NOT_FOUND));
 
-        Keyword keyword = findTimer.getKeyword();
+        Keyword keyword = timerToBeDeleted.getKeyword();
+        String timerToBeDeletedName = timerToBeDeleted.getTimerName();
+        timerRepository.delete(timerToBeDeleted);
 
-        timerRepository.delete(findTimer);
+        if (keyword != null) {
+            if (keyword.getTimers().isEmpty()) {
 
-        if (keyword.getTimers().isEmpty()) {
-
-            keywordRepository.delete(keyword);
-            return "(키워드 포함)" + findTimer.getTimerName();
-        } else {
-            return findTimer.getTimerName();
+                keywordRepository.delete(keyword);
+                return "(키워드 포함)" + timerToBeDeletedName;
+            }
         }
+
+        return timerToBeDeletedName;
     }
 
     public List<Timer> getTodayTimers() {

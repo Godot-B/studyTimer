@@ -17,8 +17,6 @@ import java.util.Map;
 @Entity
 @Getter
 @Builder
-@DynamicUpdate
-@DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class DatePlan extends BaseEntity {
@@ -34,11 +32,19 @@ public class DatePlan extends BaseEntity {
 
     private Integer goalTime;
 
+    @Builder.Default
     private Float totalStudyTime = 0.0f;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "study_time_by_hour")
-    private Map<Integer, Integer> hourlyStudyTimes = initializeHourlyMap();
+    private Map<Integer, Integer> hourlyStudyTimes;
+
+    @PrePersist
+    public void prePersist() {
+        if (hourlyStudyTimes == null) {
+            hourlyStudyTimes = initializeHourlyMap();
+        }
+    }
 
     private static Map<Integer, Integer> initializeHourlyMap() {
         Map<Integer, Integer> map = new HashMap<>();

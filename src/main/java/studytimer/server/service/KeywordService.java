@@ -26,7 +26,7 @@ public class KeywordService {
     private final DatePlanQueryService datePlanQueryService;
 
     @Transactional
-    public Optional<KeywordResponseDTO.SetResultDTO> optionalSaveKeyword(Integer timerIdx) {
+    public Keyword optionalSaveKeyword(Integer timerIdx) {
 
         DatePlan todayPlan = datePlanRepository.findByDateAndThrow(LocalDate.now());
         Timer timer = datePlanQueryService.getTimerByIndex(timerIdx, todayPlan);
@@ -35,26 +35,26 @@ public class KeywordService {
             throw new TimerHandler(ErrorStatus.TIMER_ALREADY_COMPLETED);
 
         } else if (timer.getStarted()) {
-            return Optional.empty(); // 단지 시작. 키워드 저장 X
+            return timer.getKeyword(); // 단지 시작. 키워드 저장 X
 
         } else {
             timer.setStarted(true);
-            String keywordName = timer.getTimerName();
+            String timerName = timer.getTimerName();
+            Keyword findKeyword = keywordRepository.findByKeywordName(timerName);
+            if (findKeyword == null) {
+                Keyword newKeyword = Keyword.builder()
+                        .keywordName(timerName)
+                        .keywordStudyTime(timer.getTimerStudyTime())
+                        .build();
+                keywordRepository.save(newKeyword);
 
-            Keyword newKeyword = Keyword.builder()
-                    .keywordName(keywordName)
-                    .keywordStudyTime(timer.getTimerStudyTime())
-                    .build();
+                timer.setKeyword(newKeyword);
+                return newKeyword;
+            } else {
 
-            keywordRepository.save(newKeyword);
-
-            timer.setKeyword(newKeyword);
-
-            return Optional.ofNullable(KeywordResponseDTO.SetResultDTO.builder()
-                    .keywordId(newKeyword.getId())
-                    .keywordName(newKeyword.getKeywordName())
-                    .createdAt(newKeyword.getCreatedAt())
-                    .build());
+                timer.setKeyword(findKeyword);
+                return findKeyword;
+            }
         }
     }
 
