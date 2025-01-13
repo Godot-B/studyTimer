@@ -37,6 +37,25 @@ public class DatePlanService implements DatePlanQueryService, DatePlanCommandSer
     private final KeywordRepository keywordRepository;
     private final TimerRepository timerRepository;
 
+    public DatePlanResponseDTO.TodayStatusDTO getTodayStatusDTO() {
+
+        LocalDate todayDate = LocalDate.now();
+        DatePlan datePlan = datePlanRepository.findByDate(todayDate);
+
+        DatePlanResponseDTO.TodayStatusDTO todayStatusDTO = DatePlanResponseDTO.TodayStatusDTO.builder()
+                .date(todayDate)
+                .build();
+
+        if (datePlan == null) {
+            todayStatusDTO.setIsPresent(false);
+        } else {
+            todayStatusDTO.setIsPresent(true);
+            todayStatusDTO.setGoalTime(datePlan.getGoalTime());
+        }
+
+        return todayStatusDTO;
+    }
+
     /**
      * 시간 별 공부 분포 기록
      * @return start와 end의 차이 (float 분 단위)

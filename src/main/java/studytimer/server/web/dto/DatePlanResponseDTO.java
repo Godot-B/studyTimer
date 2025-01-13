@@ -1,15 +1,25 @@
 package studytimer.server.web.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class DatePlanResponseDTO {
+
+    @Builder
+    @Getter @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TodayStatusDTO {
+
+        LocalDate date;
+
+        Boolean isPresent;
+
+        Integer goalTime;
+    }
 
     @Builder
     @Getter

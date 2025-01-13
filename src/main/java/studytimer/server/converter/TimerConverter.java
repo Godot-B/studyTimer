@@ -29,7 +29,7 @@ public class TimerConverter {
     public static TimerResponseDTO.RemainTimeDTO toRemainTimeDTO(Timer timer) {
 
         return TimerResponseDTO.RemainTimeDTO.builder()
-                .remainTime(timer.getTimerGoalTime() - timer.getTimerStudyTime())
+                .remainTime(0.0f)
                 .build();
     }
 }

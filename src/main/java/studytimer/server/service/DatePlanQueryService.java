@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface DatePlanQueryService {
 
+    DatePlanResponseDTO.TodayStatusDTO getTodayStatusDTO();
+
     Timer getTimerByIndex(Integer timerIdx, DatePlan datePlan);
 
     DatePlan getTodayPlan();

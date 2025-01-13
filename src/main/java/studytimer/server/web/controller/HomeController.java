@@ -28,7 +28,17 @@ public class HomeController {
     private final TimerService timerService;
 
     /**
-     * 홈 첫 계획 화면
+     * 오늘의 계획 상태 응답
+     */
+    @Operation(summary = "첫 홈 페이지 조회", description = "홈 화면, 오늘의 계획이 이미 존재한다면 수정 화면으로 바뀝니다.")
+    @GetMapping
+    public ApiResponse<DatePlanResponseDTO.TodayStatusDTO> getDatePlan() {
+
+        return ApiResponse.onSuccess(datePlanService.getTodayStatusDTO());
+    }
+
+    /**
+     * 설정하기 또는 수정하기
      */
     @Operation(summary = "오늘의 총 목표 시간 설정", description = "홈 화면에서 총 목표 시간을 설정, 또는 수정합니다.")
     @PostMapping("/set")
