@@ -28,7 +28,7 @@ public class DatePlanConverter {
                     .id(timer.getId())
                     .subjectName(timer.getTimerName())
                     .goalTime(timerGoalTime)
-                    .remainTime(timerGoalTime - timerStudyTime)
+                    .remainTime((timer.getCompleted()) ? 0.0f : (timerGoalTime - timerStudyTime))
                     .breakTime(timer.getBreakTime())
                     .build());
         }
