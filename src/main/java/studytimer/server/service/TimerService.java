@@ -79,7 +79,7 @@ public class TimerService {
 
         return TimerResponseDTO.TimerViewDTO.builder()
                 .subjectName(timer.getTimerName())
-                .remainTime(timerGoalTime - timerStudyTime)
+                .remainTime((timer.getCompleted()) ? 0.0f : (timerGoalTime - timerStudyTime))
                 .goalTime(todayPlan.getGoalTime())
                 .totalStudyTime(todayPlan.getTotalStudyTime())
                 .subjectGoalTime(timerGoalTime)
