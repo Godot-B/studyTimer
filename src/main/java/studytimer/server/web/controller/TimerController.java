@@ -75,13 +75,4 @@ public class TimerController {
         Timer currentTimer = datePlanCommandService.completeTimer(subjectIdx, request);
         return ApiResponse.onSuccess(TimerConverter.toRemainTimeDTO(currentTimer));
     }
-
-    //test용 자정 컨트롤러
-/*    @Operation(summary = "자정 이벤트 실행", description = "test용")
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "요청 성공")
-    @PostMapping("/{date}")
-    public ApiResponse<Void> midnightTest(@PathVariable LocalDate date) {
-        datePlanCommandService.midnightCopyDatePlan(date);
-        return ApiResponse.onSuccess(null);
-    }*/
 }
