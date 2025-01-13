@@ -1,0 +1,3 @@
+[submodule "iOS"]
+	path = iOS
+	url = https://github.com/H0sungKim/iOSHackathon.git
